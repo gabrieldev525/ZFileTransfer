@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">ZFileTransfer - FTP Client</string>
+
+    <!-- Connection Ftp Input Data -->
+    <string name="name">Name</string>
+    <string name="host">Host</string>
+    <string name="username">Username</string>
+    <string name="port">Port</string>
+    <string name="password">Password</string>
+
+    <!-- Activity title -->
+    <string name="new_connection">New connection</string>
+
+    <!-- action button -->
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
 </resources>
