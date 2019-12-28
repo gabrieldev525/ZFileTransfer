@@ -1,5 +1,7 @@
 package com.gabrieldev525.zfiletransfer;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,15 +56,25 @@ public class NewConnection extends AppCompatActivity {
                 } else {
                     boolean result = controller.createConnection(name, host, Integer.parseInt(port), username, password);
 
+                    Intent resultIntent = new Intent();
+
 
                     if(result) {
                         Toast.makeText(NewConnection.this,
                                         getResources().getString(R.string.connection_created_successfully),
                                         Toast.LENGTH_LONG).show();
+
+                        // sending data to list of connection
+                        resultIntent.putExtra("name", name);
+                        resultIntent.putExtra("host", host);
+                        resultIntent.putExtra("port", Integer.parseInt(port));
+                        setResult(RESULT_OK, resultIntent);
                     } else {
                         Toast.makeText(NewConnection.this,
                                         getResources().getString(R.string.fail_on_create_connection),
                                         Toast.LENGTH_LONG).show();
+
+                        setResult(RESULT_CANCELED, null);
                     }
 
                     finish();

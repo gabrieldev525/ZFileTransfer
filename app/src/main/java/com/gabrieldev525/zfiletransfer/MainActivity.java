@@ -1,5 +1,6 @@
 package com.gabrieldev525.zfiletransfer;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -21,7 +22,12 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<FTPBase> ftpConnList;
     private ListView ftpConnListView;
+    private FtpListAdapter ftpListAdapter;
     private FloatingActionButton newConnectionBtn;
+
+    // request code to start activity for result
+    private static final int CREATE_CONNECTION = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
         // iterate with the cursor data and set it in the list view
         cursor.moveToFirst();
         while(!cursor.isAfterLast()) {
-            Toast.makeText(getBaseContext(), "Listando", Toast.LENGTH_SHORT).show();
-
             FTPBase ftpConn = new FTPBase();
 
             // get the current iterator cursor data to set in the list
@@ -57,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
         // set the adapter with items to list
         ftpConnListView = (ListView) findViewById(R.id.ftp_listview);
-        ftpConnListView.setAdapter(new FtpListAdapter(this, ftpConnList));
+        ftpListAdapter = new FtpListAdapter(this, ftpConnList);
+        ftpConnListView.setAdapter(ftpListAdapter);
 
         // initialize the new connection button
         newConnectionBtn = (FloatingActionButton) findViewById(R.id.newConnectionBtn);
@@ -65,8 +70,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, NewConnection.class);
-                startActivity(i);
+                startActivityForResult(i, CREATE_CONNECTION);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == CREATE_CONNECTION) {
+            if(resultCode == RESULT_OK) {
+                FTPBase ftpConn = new FTPBase();
+                ftpConn.setName(data.getStringExtra("name"));
+                ftpConn.setHost(data.getStringExtra("host"));
+                ftpConn.setPort(data.getIntExtra("port", 0));
+                ftpConnList.add(ftpConn);
+
+                ftpListAdapter.notifyDataSetChanged();
+            }
+        }
     }
 }
