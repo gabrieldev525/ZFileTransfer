@@ -65,4 +65,16 @@ public class Controller {
         db.close();
         return cursor;
     }
+
+
+    /**
+     *
+     * @param connectionId
+     */
+    public void deleteConnection(int connectionId) {
+        String where = FTPDB.ID + "=" + connectionId;
+        db = database.getReadableDatabase();
+        db.delete(FTPDB.TABLE, where, null);
+        db.close();
+    }
 }

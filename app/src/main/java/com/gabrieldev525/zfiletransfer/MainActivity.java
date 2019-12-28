@@ -2,8 +2,12 @@ package com.gabrieldev525.zfiletransfer;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -20,7 +24,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<FTPBase> ftpConnList;
+    public ArrayList<FTPBase> ftpConnList;
     private ListView ftpConnListView;
     private FtpListAdapter ftpListAdapter;
     private FloatingActionButton newConnectionBtn;
@@ -75,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(i, CREATE_CONNECTION);
             }
         });
+
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("list-menu"));
     }
 
     @Override
@@ -92,4 +99,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    public BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int removeConnectionIndex = intent.getIntExtra("remove_connection", -1);
+
+            if(removeConnectionIndex != -1) {
+                ftpConnList.remove(removeConnectionIndex);
+                ftpListAdapter.notifyDataSetChanged();
+                Toast.makeText(getBaseContext(),
+                               getResources().getString(R.string.connection_deleted_successfully),
+                               Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 }
