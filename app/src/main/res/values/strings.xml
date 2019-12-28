@@ -8,6 +8,10 @@
     <string name="port">Port</string>
     <string name="password">Password</string>
 
+    <!-- result message -->
+    <string name="connection_created_successfully">Connection created successfully</string>
+    <string name="fail_on_create_connection">Fail on create connection</string>
+
     <!-- Activity title -->
     <string name="new_connection">New connection</string>
 

@@ -4,22 +4,29 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gabrieldev525.zfiletransfer.database.Controller;
+
 public class NewConnection extends AppCompatActivity {
 
     private Button newConnectionBtn, cancelConnectionBtn;
     private EditText connHost, connName, connPort, connPassword, connUsername;
     private TextView errorMessage;
+    private Controller controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_connection);
+
+        // init database controller
+        controller = new Controller(getBaseContext());
 
         // error message text view
         errorMessage = (TextView) findViewById(R.id.errorMessage);
@@ -45,7 +52,20 @@ public class NewConnection extends AppCompatActivity {
                    isEmpty(port)) {
                     setErrorMessage("Preencha todos os campos");
                 } else {
-                    Toast.makeText(NewConnection.this, "Sucesso", Toast.LENGTH_LONG).show();
+                    boolean result = controller.createConnection(name, host, Integer.parseInt(port), username, password);
+
+
+                    if(result) {
+                        Toast.makeText(NewConnection.this,
+                                        getResources().getString(R.string.connection_created_successfully),
+                                        Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(NewConnection.this,
+                                        getResources().getString(R.string.fail_on_create_connection),
+                                        Toast.LENGTH_LONG).show();
+                    }
+
+                    finish();
                 }
             }
         });
