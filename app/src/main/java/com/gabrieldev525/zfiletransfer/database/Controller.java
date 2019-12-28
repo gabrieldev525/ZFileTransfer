@@ -22,7 +22,7 @@ public class Controller {
      * @param password
      * @return
      */
-    public boolean createConnection(String name, String host, int port, String username, String password) {
+    public long createConnection(String name, String host, int port, String username, String password) {
         ContentValues values;
         long result;
 
@@ -37,11 +37,11 @@ public class Controller {
         result = db.insert(FTPDB.TABLE, null, values);
         db.close();
 
-        return result != -1;
+        return result;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public Cursor getConnections() {

@@ -54,12 +54,12 @@ public class NewConnection extends AppCompatActivity {
                    isEmpty(port)) {
                     setErrorMessage("Preencha todos os campos");
                 } else {
-                    boolean result = controller.createConnection(name, host, Integer.parseInt(port), username, password);
+                    long result = controller.createConnection(name, host, Integer.parseInt(port), username, password);
 
                     Intent resultIntent = new Intent();
 
 
-                    if(result) {
+                    if(result != -1) {
                         Toast.makeText(NewConnection.this,
                                         getResources().getString(R.string.connection_created_successfully),
                                         Toast.LENGTH_LONG).show();
@@ -68,6 +68,7 @@ public class NewConnection extends AppCompatActivity {
                         resultIntent.putExtra("name", name);
                         resultIntent.putExtra("host", host);
                         resultIntent.putExtra("port", Integer.parseInt(port));
+                        resultIntent.putExtra("id", result);
                         setResult(RESULT_OK, resultIntent);
                     } else {
                         Toast.makeText(NewConnection.this,

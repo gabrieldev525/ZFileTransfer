@@ -49,11 +49,13 @@ public class MainActivity extends AppCompatActivity {
             String name = cursor.getString(cursor.getColumnIndex(FTPDB.NAME));
             String host = cursor.getString(cursor.getColumnIndex(FTPDB.HOST));
             int port = cursor.getInt(cursor.getColumnIndex(FTPDB.PORT));
+            int id = cursor.getInt(cursor.getColumnIndex(FTPDB.ID));
 
             // set the data in the class to appear in the list
             ftpConn.setHost(host);
             ftpConn.setPort(port);
             ftpConn.setName(name);
+            ftpConn.setId(id);
 
             ftpConnList.add(ftpConn);
             cursor.moveToNext();
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 ftpConn.setName(data.getStringExtra("name"));
                 ftpConn.setHost(data.getStringExtra("host"));
                 ftpConn.setPort(data.getIntExtra("port", 0));
+                ftpConn.setId(data.getIntExtra("id", -1));
                 ftpConnList.add(ftpConn);
 
                 ftpListAdapter.notifyDataSetChanged();

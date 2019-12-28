@@ -1,11 +1,16 @@
 package com.gabrieldev525.zfiletransfer.adapter;
 
 public class FTPBase {
+    private int id;
     private String name;
     private String host;
     private String username;
     private String password;
     private int port;
+
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
 
     public String getName() {
         return name;
