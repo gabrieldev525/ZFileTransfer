@@ -35,6 +35,7 @@ public class NewConnection extends AppCompatActivity {
         connHost = (EditText) findViewById(R.id.inputConnHost);
         connName = (EditText) findViewById(R.id.inputConnName);
         connPort = (EditText) findViewById(R.id.inputConnPort);
+        connPort.setText("21");
         connPassword = (EditText) findViewById(R.id.inputConnPassword);
         connUsername = (EditText) findViewById(R.id.inputConnUsername);
 
