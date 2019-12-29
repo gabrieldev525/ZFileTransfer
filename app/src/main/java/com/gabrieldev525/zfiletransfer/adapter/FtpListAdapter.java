@@ -1,5 +1,6 @@
 package com.gabrieldev525.zfiletransfer.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.gabrieldev525.zfiletransfer.EditConnection;
 import com.gabrieldev525.zfiletransfer.MainActivity;
 import com.gabrieldev525.zfiletransfer.R;
 import com.gabrieldev525.zfiletransfer.database.Controller;
@@ -76,9 +78,20 @@ public class FtpListAdapter extends BaseAdapter {
                             case R.id.delete_connection:
                                 controller.deleteConnection(ftpBase.getId());
 
-                                Intent intent = new Intent("list-menu");
+                                Intent intent = new Intent("connection-action");
                                 intent.putExtra("remove_connection", position);
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                                break;
+                            case R.id.edit_connection:
+                                Intent editIntent = new Intent(context, EditConnection.class);
+                                editIntent.putExtra("id", ftpBase.getId());
+                                editIntent.putExtra("name", ftpBase.getName());
+                                editIntent.putExtra("host", ftpBase.getHost());
+                                editIntent.putExtra("port", ftpBase.getPort());
+                                editIntent.putExtra("username", ftpBase.getUsername());
+
+                                ((Activity) context).startActivityForResult(editIntent, MainActivity.EDIT_CONNECTION);
+                                break;
                             default:
                                 break;
                         }

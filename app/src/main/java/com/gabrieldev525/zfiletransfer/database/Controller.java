@@ -52,7 +52,7 @@ public class Controller {
             FTPDB.NAME,
             FTPDB.USERNAME,
             FTPDB.HOST,
-            FTPDB.PORT
+            FTPDB.PORT,
         };
 
         db = database.getWritableDatabase();
@@ -75,6 +75,37 @@ public class Controller {
         String where = FTPDB.ID + "=" + connectionId;
         db = database.getReadableDatabase();
         db.delete(FTPDB.TABLE, where, null);
+        db.close();
+    }
+
+    /**
+     *
+     * @param id
+     * @param name
+     * @param host
+     * @param port
+     * @param username
+     * @param password
+     */
+    public void editConnection(int id, String name, String host, int port, String username, String password) {
+        ContentValues values = new ContentValues();
+        String where = FTPDB.ID + "=" + id;
+
+        db = database.getWritableDatabase();
+
+        // set the data in the values
+        values.put(FTPDB.NAME, name);
+        values.put(FTPDB.HOST, host);
+        values.put(FTPDB.PORT, port);
+        values.put(FTPDB.USERNAME, username);
+
+        // if the password was altered
+        // in the edit page, it start with a empty field
+        if(!password.trim().isEmpty())
+            values.put(FTPDB.PASSWORD, password);
+
+        // update the database
+        db.update(FTPDB.TABLE, values, where, null);
         db.close();
     }
 }

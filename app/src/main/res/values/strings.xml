@@ -12,9 +12,12 @@
     <string name="connection_created_successfully">Connection created successfully</string>
     <string name="fail_on_create_connection">Fail on create connection</string>
     <string name="connection_deleted_successfully">Connection deleted successfully</string>
+    <string name="connection_edited_successfully">Connection edited successfully</string>
+    <string name="error_edit_id_undefined">Error on edit connection: ID is not seted</string>
 
     <!-- Activity title -->
     <string name="new_connection">New connection</string>
+    <string name="edit_connection">Edit connection</string>
 
     <!-- action button -->
     <string name="save">Save</string>
