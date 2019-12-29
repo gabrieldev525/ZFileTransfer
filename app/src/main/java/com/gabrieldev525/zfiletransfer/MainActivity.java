@@ -1,6 +1,7 @@
 package com.gabrieldev525.zfiletransfer;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -9,8 +10,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,6 +27,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    private Utils utils;
 
     public ArrayList<FTPBase> ftpConnList = new ArrayList<FTPBase>();
     private ListView ftpConnListView;
@@ -39,8 +45,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // this utils contains the methods to work with the ftp
+        utils = new Utils();
+
         // set the adapter with items to list
         ftpConnListView = (ListView) findViewById(R.id.ftp_listview);
+        ftpConnListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                FTPBase ftpBase = ftpConnList.get(position);
+
+                FtpClientConnect connect = new FtpClientConnect(ftpBase.getHost(), ftpBase.getUsername(), ftpBase.getPassword(),
+                                                       ftpBase.getPort());
+
+                connect.execute();
+            }
+        });
         ftpListAdapter = new FtpListAdapter(this, ftpConnList);
         ftpConnListView.setAdapter(ftpListAdapter);
 
@@ -76,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
             String name = cursor.getString(cursor.getColumnIndex(FTPDB.NAME));
             String host = cursor.getString(cursor.getColumnIndex(FTPDB.HOST));
             String username = cursor.getString(cursor.getColumnIndex(FTPDB.USERNAME));
+            String password = cursor.getString(cursor.getColumnIndex(FTPDB.PASSWORD));
             int port = cursor.getInt(cursor.getColumnIndex(FTPDB.PORT));
             int id = cursor.getInt(cursor.getColumnIndex(FTPDB.ID));
 
@@ -84,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
             ftpConn.setPort(port);
             ftpConn.setName(name);
             ftpConn.setUsername(username);
+            ftpConn.setPassword(password);
             ftpConn.setId(id);
 
             ftpConnList.add(ftpConn);
@@ -102,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 ftpConn.setHost(data.getStringExtra("host"));
                 ftpConn.setPort(data.getIntExtra("port", 0));
                 ftpConn.setUsername(data.getStringExtra("username"));
+                ftpConn.setPassword(data.getStringExtra("password"));
                 ftpConn.setId(data.getIntExtra("id", -1));
                 ftpConnList.add(ftpConn);
 
@@ -128,4 +151,38 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+
+    public class FtpClientConnect extends AsyncTask<String, Void, Boolean> {
+        private String host;
+        private String username;
+        private String password;
+        private int port;
+
+        public FtpClientConnect(String host, String username, String password, int port) {
+            super();
+
+            this.host = host;
+            this.username = username;
+            this.password = password;
+            this.port = port;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            boolean status = utils.ftpConnect(host, username, password, port);
+            Log.w("status", "" + status);
+            return status;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+        }
+    }
 }

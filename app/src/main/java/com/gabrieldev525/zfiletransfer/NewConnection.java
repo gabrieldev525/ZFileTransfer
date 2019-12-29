@@ -69,6 +69,7 @@ public class NewConnection extends AppCompatActivity {
                         resultIntent.putExtra("port", Integer.parseInt(port));
                         resultIntent.putExtra("username", username);
                         resultIntent.putExtra("id", result);
+                        resultIntent.putExtra("password", password);
                         setResult(RESULT_OK, resultIntent);
                     } else {
                         Toast.makeText(NewConnection.this,

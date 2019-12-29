@@ -53,6 +53,7 @@ public class Controller {
             FTPDB.USERNAME,
             FTPDB.HOST,
             FTPDB.PORT,
+            FTPDB.PASSWORD
         };
 
         db = database.getWritableDatabase();
