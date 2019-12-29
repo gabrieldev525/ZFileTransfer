@@ -15,6 +15,10 @@
     <string name="connection_edited_successfully">Connection edited successfully</string>
     <string name="error_edit_id_undefined">Error on edit connection: ID is not seted</string>
 
+    <!-- warning -->
+    <string name="are_you_sure">are you sure?</string>
+    <string name="really_delete_connection">Do you really want to delete this connection?</string>
+
     <!-- Activity title -->
     <string name="new_connection">New connection</string>
     <string name="edit_connection">Edit connection</string>
@@ -24,4 +28,5 @@
     <string name="cancel">Cancel</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="yes">Yes</string>
 </resources>

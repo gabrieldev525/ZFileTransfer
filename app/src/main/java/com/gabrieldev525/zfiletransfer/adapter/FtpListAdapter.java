@@ -1,7 +1,9 @@
 package com.gabrieldev525.zfiletransfer.adapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -76,11 +78,21 @@ public class FtpListAdapter extends BaseAdapter {
 
                         switch(item.getItemId()) {
                             case R.id.delete_connection:
-                                controller.deleteConnection(ftpBase.getId());
+                                AlertDialog.Builder alertConfirm = new AlertDialog.Builder(context);
+                                alertConfirm.setTitle(context.getResources().getString(R.string.are_you_sure));
+                                alertConfirm.setMessage(context.getResources().getString(R.string.really_delete_connection));
+                                alertConfirm.setPositiveButton(context.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        controller.deleteConnection(ftpBase.getId());
 
-                                Intent intent = new Intent("connection-action");
-                                intent.putExtra("remove_connection", position);
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                                        Intent intent = new Intent("connection-action");
+                                        intent.putExtra("remove_connection", position);
+                                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                                    }
+                                });
+                                alertConfirm.setNegativeButton(context.getResources().getString(R.string.cancel), null);
+                                alertConfirm.show();
                                 break;
                             case R.id.edit_connection:
                                 Intent editIntent = new Intent(context, EditConnection.class);
