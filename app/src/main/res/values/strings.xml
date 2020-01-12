@@ -19,6 +19,10 @@
     <string name="are_you_sure">are you sure?</string>
     <string name="really_delete_connection">Do you really want to delete this connection?</string>
 
+    <!-- action -->
+    <string name="connecting">connecting</string>
+    <string name="trying_connect_server">Trying to connect with server, wait a moment.</string>
+
     <!-- Activity title -->
     <string name="new_connection">New connection</string>
     <string name="edit_connection">Edit connection</string>

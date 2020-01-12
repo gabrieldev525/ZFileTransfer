@@ -21,6 +21,7 @@
 
         <activity android:name=".NewConnection"></activity>
         <activity android:name=".EditConnection"></activity>
+        <activity android:name=".FTPFileManager"></activity>
     </application>
 
 </manifest>

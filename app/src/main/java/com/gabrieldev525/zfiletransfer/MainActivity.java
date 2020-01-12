@@ -7,6 +7,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Utils utils;
+    public static ConnectionManager connectionManager;
 
     public ArrayList<FTPBase> ftpConnList = new ArrayList<FTPBase>();
     private ListView ftpConnListView;
@@ -39,14 +40,13 @@ public class MainActivity extends AppCompatActivity {
     public static final int CREATE_CONNECTION = 1;
     public static final int EDIT_CONNECTION = 2;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // this utils contains the methods to work with the ftp
-        utils = new Utils();
+        // this connectionManager contains the methods to work with the ftp
+        connectionManager = new ConnectionManager();
 
         // set the adapter with items to list
         ftpConnListView = (ListView) findViewById(R.id.ftp_listview);
@@ -54,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 FTPBase ftpBase = ftpConnList.get(position);
+
+                Log.i("ftp - info", ftpBase.getHost());
+                Log.i("ftp - info", ftpBase.getUsername());
+                Log.i("ftp - info", ftpBase.getPassword());
+                Log.i("ftp - info", Integer.toString(ftpBase.getPort()));
 
                 FtpClientConnect connect = new FtpClientConnect(ftpBase.getHost(), ftpBase.getUsername(), ftpBase.getPassword(),
                                                        ftpBase.getPort());
@@ -152,12 +157,12 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-
     public class FtpClientConnect extends AsyncTask<String, Void, Boolean> {
         private String host;
         private String username;
         private String password;
         private int port;
+        private AlertDialog alertLoading;
 
         public FtpClientConnect(String host, String username, String password, int port) {
             super();
@@ -170,19 +175,50 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();
+            AlertDialog.Builder loading = new AlertDialog.Builder(MainActivity.this);
+            loading.setTitle(getResources().getString(R.string.connecting));
+            loading.setMessage(getResources().getString(R.string.trying_connect_server) + "\n" + host + ":" + port);
+            loading.setCancelable(false);
+            loading.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    cancel(true);
+                }
+            });
+            loading.show();
+
+            alertLoading = loading.create();
         }
 
         @Override
         protected Boolean doInBackground(String... strings) {
-            boolean status = utils.ftpConnect(host, username, password, port);
+            boolean status = connectionManager.ftpConnect(host, username, password, port);
             Log.w("status", "" + status);
+
+            if(status) {
+                String[] files = connectionManager.listCurrentDirectory();
+
+//                for(int i = 0; i < files.length; i++) {
+//                    Log.i("files", files[i]);
+//                }
+            }
             return status;
         }
 
         @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
+        protected void onPostExecute(Boolean result) {
+            alertLoading.dismiss();
+
+            if(result) {
+//                Log.i("files", connectionManager.listCurrentDirectory())
+
+//                for(int i = 0; i < files.length; i++) {
+//                    Log.i("files", files[i]);
+//                }
+                Intent i = new Intent(MainActivity.this, FTPFileManager.class);
+//                i.putExtra("connection", connectionManager);
+                startActivity(i);
+            }
         }
     }
 }

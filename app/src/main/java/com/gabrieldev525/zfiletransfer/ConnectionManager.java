@@ -7,10 +7,21 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.IOException;
+import java.io.Serializable;
 
-public class Utils {
+public class ConnectionManager implements Serializable {
 
     private FTPClient ftpClient;
+
+    /**
+     * setter and getter of the ftp client
+     */
+    public void setClient(FTPClient client) {
+        this.ftpClient = client;
+    }
+    public FTPClient getClient() {
+        return this.ftpClient;
+    }
 
     /**
      * this function connect with the ftp server
@@ -27,30 +38,14 @@ public class Utils {
     public boolean ftpConnect(String host, String username, String password, int port) {
         try {
             ftpClient = new FTPClient();
-
-            ftpClient = new FTPClient();
             ftpClient.connect(host);
             boolean status = ftpClient.login(username, password);
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
             return status;
-
-//            //connect to te host
-//            ftpClient.connect(host, port);
-//
-//            // check the response (reply) code, if true connection successfully
-//            if(FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
-//                boolean status = ftpClient.login(username, password);
-//
-//                ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-//                ftpClient.enterLocalPassiveMode();
-//                return status;
-//            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
 
         return false;
     }
@@ -67,6 +62,35 @@ public class Utils {
             ftpClient.disconnect();
 
             return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @return a array of strings with the name of all files and folders in the directory
+     */
+    public String[] listCurrentDirectory() {
+        try {
+            return ftpClient.listNames();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * @param path - the path to the directory to enter
+     * @return true if the access is ok, else return false. In case of error, return false true
+     */
+    public boolean openDirectory(String path) {
+        try {
+            return this.ftpClient.changeWorkingDirectory(path);
         } catch (IOException e) {
             e.printStackTrace();
         }
